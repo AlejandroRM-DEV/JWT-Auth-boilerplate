@@ -1,0 +1,28 @@
+{
+  "name": "jwt-auth-boilerplate",
+  "version": "1.0.0",
+  "description": "",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AlejandroRM-DEV/JWT-Auth-boilerplate.git"
+  },
+  "keywords": [
+    "jwt"
+  ],
+  "author": "Alejandro Ramirez Muñoz",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/AlejandroRM-DEV/JWT-Auth-boilerplate/issues"
+  },
+  "homepage": "https://github.com/AlejandroRM-DEV/JWT-Auth-boilerplate#readme",
+  "dependencies": {
+    "cookie-parser": "^1.4.6",
+    "dotenv": "^10.0.0",
+    "express": "^4.17.2",
+    "jsonwebtoken": "^8.5.1"
+  }
+}

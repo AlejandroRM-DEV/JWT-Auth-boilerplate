@@ -1,7 +1,7 @@
-var router = require('express').Router();
+var router = require("express").Router();
 
 router.get("/hello", (req, res) => {
-	res.json({ message: "Hello I'm a protected route" });
+	res.json({ ok: true, message: "Hello I'm a protected route" });
 });
 
-module.exports = router;  
+module.exports = router;

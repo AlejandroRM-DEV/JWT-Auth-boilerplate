@@ -11,6 +11,7 @@ const cookieOptions = {
 };
 
 const generateTokens = (user) => {
+	//You can add more data to access token but keep refresh token to minimum
 	const accessTokenPayload = { user_id: user.user_id, iat: Date.now() };
 	const refreshTokenPayload = { user_id: user.user_id, iat: Date.now() };
 	const accessToken = jwt.sign(accessTokenPayload, process.env.ACCESS_TOKEN_SECRET, {

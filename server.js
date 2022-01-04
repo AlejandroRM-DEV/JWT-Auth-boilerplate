@@ -1,10 +1,10 @@
 require("dotenv").config();
-
 const express = require("express");
-const app = express();
 const cookieParser = require("cookie-parser");
-const helmet = require("helmet");
 const compression = require("compression");
+
+const app = express();
+const helmet = require("helmet");
 
 app.use(express.json());
 app.use(cookieParser());

@@ -1,13 +1,13 @@
-var DataTypes = require("sequelize").DataTypes;
-var _refresh_tokens = require("./refresh_tokens.model");
-var _users = require("./users.model");
+const { DataTypes } = require("sequelize");
+const modelRefreshTokens = require("./refresh_tokens.model");
+const modelUsers = require("./users.model");
 
 function initModels(sequelize) {
-	var refresh_tokens = _refresh_tokens(sequelize, DataTypes);
-	var users = _users(sequelize, DataTypes);
+	const refreshTokens = modelRefreshTokens(sequelize, DataTypes);
+	const users = modelUsers(sequelize, DataTypes);
 
 	return {
-		refresh_tokens,
+		refreshTokens,
 		users,
 	};
 }

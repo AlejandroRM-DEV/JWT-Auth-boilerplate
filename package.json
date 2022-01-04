@@ -33,6 +33,11 @@
     "validate.js": "^0.13.1"
   },
   "devDependencies": {
+    "eslint": "^8.6.0",
+    "eslint-config-airbnb-base": "^15.0.0",
+    "eslint-config-prettier": "^8.3.0",
+    "eslint-plugin-import": "^2.25.4",
+    "prettier": "^2.5.1",
     "sequelize-auto": "^0.8.8"
   }
 }

@@ -1,7 +1,8 @@
+/* eslint-disable consistent-return */
 const jwt = require("jsonwebtoken");
 
-module.exports = function (req, res, next) {
-	const authorizationHeader = req.headers["authorization"];
+module.exports = (req, res, next) => {
+	const authorizationHeader = req.headers.authorization;
 	const token = authorizationHeader && authorizationHeader.split(" ")[1];
 	if (!token) return res.sendStatus(401);
 

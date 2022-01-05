@@ -1,4 +1,3 @@
-/* eslint-disable consistent-return */
 const jwt = require("jsonwebtoken");
 const validate = require("validate.js");
 const bcrypt = require("bcrypt");
@@ -10,15 +9,13 @@ const cookieOptions = {
 };
 
 /**
- * //You can add more data to access token but keep refresh token to minimum
+ * You can add more data to access token but keep refresh token to minimum
  */
 const generateTokens = (user) => {
-	const accessTokenPayload = { user_id: user.user_id, iat: Date.now() };
-	const refreshTokenPayload = { user_id: user.user_id, iat: Date.now() };
-	const accessToken = jwt.sign(accessTokenPayload, process.env.ACCESS_TOKEN_SECRET, {
+	const accessToken = jwt.sign({ user_id: user.user_id, now: Date.now() }, process.env.ACCESS_TOKEN_SECRET, {
 		expiresIn: process.env.ACCESS_TOKEN_EXP,
 	});
-	const refreshToken = jwt.sign(refreshTokenPayload, process.env.REFRESH_TOKEN_SECRET, {
+	const refreshToken = jwt.sign({ user_id: user.user_id, now: Date.now() }, process.env.REFRESH_TOKEN_SECRET, {
 		expiresIn: process.env.REFRESH_TOKEN_EXP,
 	});
 	return { accessToken, refreshToken };
@@ -83,17 +80,17 @@ exports.logout = async (req, res) => {
 exports.refreshToken = async (req, res) => {
 	const prevRefreshToken = req.cookies?.refresh_token;
 	if (!prevRefreshToken) {
-		return res.sendStatus(401);
+		return res.status(401).json({ ok: false, error: "Unauthorized" });
 	}
 
 	const token = await models.refreshTokens.findOne({ attributes: ["user_id"], where: { token: prevRefreshToken } });
 	if (!token) {
-		return res.sendStatus(403);
+		return res.status(403).json({ ok: false, error: "Forbidden" });
 	}
 
 	jwt.verify(prevRefreshToken, process.env.REFRESH_TOKEN_SECRET, async (err, decoded) => {
 		if (err) {
-			return res.sendStatus(403);
+			return res.status(403).json({ ok: false, error: "Forbidden" });
 		}
 
 		await models.refreshTokens.destroy({ where: { token: prevRefreshToken } });

@@ -1,7 +1,7 @@
 const router = require("express").Router();
-const authenticateToken = require("../middlewares/token.middleware");
+const authorization = require("../middlewares/authorization.middleware");
 
 router.use("/auth", require("./auth"));
-router.use("/protected", authenticateToken, require("./protected"));
+router.use("/protected", authorization, require("./protected"));
 
 module.exports = router;

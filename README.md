@@ -9,6 +9,7 @@ ACCESS_TOKEN_EXP=5m
 REFRESH_TOKEN_EXP=60m
 NODE_ENV=dev || production
 DB_URL=postgres://user:password@localhost:5432/databse
+PORT=xxxx
 ```
 
 ## Database

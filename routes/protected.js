@@ -1,7 +1,6 @@
 const router = require("express").Router();
+const protectedController = require("../controllers/protected.controller");
 
-router.get("/hello", async (req, res) => {
-	res.json({ ok: true, message: "Hello I'm a protected route" });
-});
+router.get("/hello", protectedController.hello);
 
 module.exports = router;

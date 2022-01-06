@@ -88,17 +88,16 @@ exports.refreshToken = async (req, res) => {
 		return res.status(403).json({ ok: false, error: "Forbidden" });
 	}
 
-	jwt.verify(prevRefreshToken, process.env.REFRESH_TOKEN_SECRET, async (err, decoded) => {
+	jwt.verify(prevRefreshToken, process.env.REFRESH_TOKEN_SECRET, async (err) => {
 		if (err) {
 			return res.status(403).json({ ok: false, error: "Forbidden" });
 		}
 
-		await models.refreshTokens.destroy({ where: { token: prevRefreshToken } });
-
-		const user = await models.users.findOne({ attributes: ["user_id"], where: { user_id: decoded.user_id } });
-		const { accessToken, refreshToken } = generateTokens({ ...user.dataValues });
+		const user = (await token.getUser()).toJSON();
+		const { accessToken, refreshToken } = generateTokens(user);
 		const tokenStored = await models.refreshTokens.create({ token: refreshToken, user_id: user.user_id });
 		if (tokenStored) {
+			await models.refreshTokens.destroy({ where: { token: prevRefreshToken } });
 			return res
 				.clearCookie("refresh_token")
 				.cookie("refresh_token", refreshToken, cookieOptions)

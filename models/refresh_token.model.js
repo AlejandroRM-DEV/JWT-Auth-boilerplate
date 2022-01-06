@@ -1,6 +1,6 @@
 module.exports = (sequelize, DataTypes) =>
 	sequelize.define(
-		"refresh_tokens",
+		"RefreshToken",
 		{
 			user_id: {
 				type: DataTypes.INTEGER,

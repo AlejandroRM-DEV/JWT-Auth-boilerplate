@@ -1,7 +1,7 @@
 const jwt = require("jsonwebtoken");
 const validate = require("validate.js");
 const bcrypt = require("bcrypt");
-const models = require("../models");
+const { RefreshToken, User } = require("../models");
 
 const cookieOptions = {
 	httpOnly: true,
@@ -32,12 +32,12 @@ exports.signin = async (req, res) => {
 		return res.json({ ok: false, error: errors });
 	}
 
-	const prevUser = await models.users.findOne({ attributes: ["user_id"], where: { email: data.email } });
+	const prevUser = await User.findOne({ attributes: ["user_id"], where: { email: data.email } });
 	if (prevUser) {
 		return res.json({ ok: false, error: "The email already exists" });
 	}
 
-	const newUser = await models.users.create({ ...data, password: bcrypt.hashSync(data.password, 10) });
+	const newUser = await User.create({ ...data, password: bcrypt.hashSync(data.password, 10) });
 	if (newUser) {
 		return res.json({ ok: true });
 	}
@@ -55,7 +55,7 @@ exports.login = async (req, res) => {
 		return res.json({ ok: false, error: errors });
 	}
 
-	const user = await models.users.findOne({ attributes: ["user_id", "password"], where: { email: data.email } });
+	const user = await User.findOne({ attributes: ["user_id", "password"], where: { email: data.email } });
 	if (!user) {
 		return res.json({ ok: false, error: "The email does not exists" });
 	}
@@ -64,7 +64,7 @@ exports.login = async (req, res) => {
 	}
 
 	const { accessToken, refreshToken } = generateTokens({ ...user.dataValues });
-	const tokenStored = await models.refreshTokens.create({ token: refreshToken, user_id: user.user_id });
+	const tokenStored = await RefreshToken.create({ token: refreshToken, user_id: user.user_id });
 	if (tokenStored) {
 		return res.cookie("refresh_token", refreshToken, cookieOptions).json({ ok: true, accessToken });
 	}
@@ -73,7 +73,7 @@ exports.login = async (req, res) => {
 
 exports.logout = async (req, res) => {
 	const refreshToken = req.cookies?.refresh_token || "";
-	await models.refreshTokens.destroy({ where: { token: refreshToken } });
+	await RefreshToken.destroy({ where: { token: refreshToken } });
 	res.clearCookie("refresh_token").json({ ok: true, message: "Successfully logged out" });
 };
 
@@ -83,7 +83,7 @@ exports.refreshToken = async (req, res) => {
 		return res.status(401).json({ ok: false, error: "Unauthorized" });
 	}
 
-	const token = await models.refreshTokens.findOne({ attributes: ["user_id"], where: { token: prevRefreshToken } });
+	const token = await RefreshToken.findOne({ attributes: ["user_id"], where: { token: prevRefreshToken } });
 	if (!token) {
 		return res.status(403).json({ ok: false, error: "Forbidden" });
 	}
@@ -95,9 +95,9 @@ exports.refreshToken = async (req, res) => {
 
 		const user = (await token.getUser()).toJSON();
 		const { accessToken, refreshToken } = generateTokens(user);
-		const tokenStored = await models.refreshTokens.create({ token: refreshToken, user_id: user.user_id });
+		const tokenStored = await RefreshToken.create({ token: refreshToken, user_id: user.user_id });
 		if (tokenStored) {
-			await models.refreshTokens.destroy({ where: { token: prevRefreshToken } });
+			await RefreshToken.destroy({ where: { token: prevRefreshToken } });
 			return res
 				.clearCookie("refresh_token")
 				.cookie("refresh_token", refreshToken, cookieOptions)

@@ -1,16 +1,16 @@
 const { DataTypes } = require("sequelize");
-const modelRefreshTokens = require("./refresh_tokens.model");
-const modelUsers = require("./users.model");
+const modelRefreshToken = require("./refresh_token.model");
+const modelUser = require("./user.model");
 
 function initModels(sequelize) {
-	const refreshTokens = modelRefreshTokens(sequelize, DataTypes);
-	const users = modelUsers(sequelize, DataTypes);
+	const RefreshToken = modelRefreshToken(sequelize, DataTypes);
+	const User = modelUser(sequelize, DataTypes);
 
-	refreshTokens.belongsTo(users, { foreignKey: "user_id", as: "user" });
+	RefreshToken.belongsTo(User, { foreignKey: "user_id", as: "user" });
 
 	return {
-		refreshTokens,
-		users,
+		RefreshToken,
+		User,
 	};
 }
 
